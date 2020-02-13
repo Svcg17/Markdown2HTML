@@ -23,7 +23,7 @@ if __name__ == "__main__":
             lineSplit = line.split(' ')
             if lineSplit[0] in markD:
                 tag = markD[lineSplit[0]]
-            toWrite = line.replace(lineSplit[0],"<{}>".format(tag))
-            toWrite = toWrite[:-1] + (" </{}>\n".format(tag))
+            toWrite = line.replace("{} ".format(lineSplit[0]),"<{}>".format(tag))
+            toWrite = toWrite[:-1] + ("</{}>\n".format(tag))
             fw.write(toWrite)
         exit(0)
