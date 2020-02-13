@@ -18,12 +18,14 @@ if __name__ == "__main__":
         sys.stderr.write("Missing " + sys.argv[1] + '\n')
         exit(1)
 
-    with open(sys.argv[1], mode='r') as fr, open(sys.argv[2], mode='w') as fw:
+    with open(sys.argv[1], mode='r') as fr, open(sys.argv[2], mode='w+') as fw:
         for line in fr:
             lineSplit = line.split(' ')
-            if lineSplit[0] in markD:
+            if lineSplit[0].startswith('#') and lineSplit[0] in markD:
                 tag = markD[lineSplit[0]]
-            toWrite = line.replace("{} ".format(lineSplit[0]),"<{}>".format(tag))
-            toWrite = toWrite[:-1] + ("</{}>\n".format(tag))
-            fw.write(toWrite)
+                toWrite = line.replace("{} ".format(lineSplit[0]),"<{}>".format(tag))
+                toWrite = toWrite[:-1] + ("</{}>\n".format(tag))
+                fw.write(toWrite)
+            else:
+                fw.write(line)
         exit(0)
