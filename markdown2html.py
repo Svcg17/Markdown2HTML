@@ -56,8 +56,7 @@ if __name__ == "__main__":
                     fw.write(line)
                     # if next line is part of the paragraph
                     if i != len(read) - 1 and read[i + 1][0] != "\n" and read[i + 1][0] not in markD:
-                        fw.write("</br>\n")
-                        continue
+                        fw.write("<br/>\n")
                     else: 
                         fw.write("</p>\n")
                         f = 0
