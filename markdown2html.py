@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 """
-    Starting script that takes two arguments:
-        - the Markdown file
-        - the output file name
+    Parsing paragraph syntax
 """
 if __name__ == "__main__":
     import sys
@@ -51,16 +49,16 @@ if __name__ == "__main__":
             else:
                 # paragraphs 
                 if line[0] != "\n":
+                    #first paragraph
                     if not f:
                         fw.write("<p>\n")
                         f = 1
                     fw.write(line)
+                    # if next line is part of the paragraph
                     if i != len(read) - 1 and read[i + 1][0] != "\n" and read[i + 1][0] not in markD:
                         fw.write("</br>\n")
                         continue
                     else: 
                         fw.write("</p>\n")
                         f = 0
-                else:
-                    fw.write(line)
         exit(0)
