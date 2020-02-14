@@ -8,7 +8,7 @@ if __name__ == "__main__":
     import sys
     from os import path
 
-    markD = {"#": "h1", "##": "h2", "###": "h3", "####": "h4", "#####": "h5", "######": "h6", "-": ["ul", "li"]}
+    markD = {"#": "h1", "##": "h2", "###": "h3", "####": "h4", "#####": "h5", "######": "h6", "-": "ul", "*": "ol"}
 
     if len(sys.argv) < 3:
         sys.stderr.write("Usage: ./markdown2html.py README.md README.html\n")
@@ -23,29 +23,30 @@ if __name__ == "__main__":
         read = fr.readlines()
         for i, line in enumerate(read):
             lineSplit = line.split(' ')
-            # Headings
-            if lineSplit[0].startswith('#') and lineSplit[0] in markD:
-                tag = markD[lineSplit[0]]
-                toWrite = line.replace("{} ".format(lineSplit[0]), "<{}>".format(tag))
-                toWrite = toWrite[:-1] + ("</{}>\n".format(tag))
-                fw.write(toWrite)
-            # Lists
-            elif lineSplit[0].startswith("-") and lineSplit[0] in markD:
-                #if its the first item list
-                if not first:
-                    toWrite = "<{}>\n".format(markD[lineSplit[0]][0])
+            if lineSplit[0] in markD:
+                # Headings
+                if lineSplit[0].startswith('#'):
+                    tag = markD[lineSplit[0]]
+                    toWrite = line.replace("{} ".format(lineSplit[0]), "<{}>".format(tag))
+                    toWrite = toWrite[:-1] + ("</{}>\n".format(tag))
                     fw.write(toWrite)
-                    first = 1
-                # do every time for '-'
-                tag = markD[lineSplit[0]][1]
-                toWrite = line.replace("{} ".format(lineSplit[0]), "<{}>".format(tag))
-                toWrite = toWrite[:-1] + ("</{}>\n".format(tag))
-                fw.write(toWrite)
-                # if its the last item list
-                if (first and (i is len(read) - 1 or not read[i + 1].startswith("- "))):
-                    toWrite = "</{}>\n".format(markD[lineSplit[0]][0])
+                # Lists
+                elif lineSplit[0].startswith("-") or lineSplit[0].startswith("*"):
+                    tag = markD[lineSplit[0]]
+                    #if its the first item list
+                    if not first:
+                        toWrite = "<{}>\n".format(tag)
+                        fw.write(toWrite)
+                        first = lineSplit[0]
+                    # do every time for '-' or '*'
+                    toWrite = line.replace("{} ".format(lineSplit[0]), "<li>")
+                    toWrite = toWrite[:-1] + ("</li>\n")
                     fw.write(toWrite)
-                    first = 0
-            else:
-                fw.write(line)
+                    # if its the last item list
+                    if i is len(read) - 1 or not read[i + 1].startswith("{} ".format(first)):
+                        toWrite = "</{}>\n".format(tag)
+                        fw.write(toWrite)
+                        first = 0
+                else:
+                    fw.write(line)
         exit(0)
