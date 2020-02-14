@@ -24,9 +24,7 @@ if __name__ == "__main__":
         for i, line in enumerate(read):
             lineSplit = line.split(' ')
             # Headings
-            print('#####', line)
             if lineSplit[0].startswith('#') and lineSplit[0] in markD:
-                print('heading')
                 tag = markD[lineSplit[0]]
                 toWrite = line.replace("{} ".format(lineSplit[0]), "<{}>".format(tag))
                 toWrite = toWrite[:-1] + ("</{}>\n".format(tag))
@@ -44,26 +42,10 @@ if __name__ == "__main__":
                 toWrite = toWrite[:-1] + ("</{}>\n".format(tag))
                 fw.write(toWrite)
                 # if its the last item list
-                if first and not read[i + 1].startswith("- "):
+                if (first and (i is len(read) - 1 or not read[i + 1].startswith("- "))):
                     toWrite = "</{}>\n".format(markD[lineSplit[0]][0])
                     fw.write(toWrite)
                     first = 0
             else:
                 fw.write(line)
         exit(0)
-"""
-elif not first and lineSplit[0].startswith("-") and lineSplit[0] in markD:
-    ul = markD[lineSplit[0]][0] 
-    li = markD[lineSplit[0]][1] 
-    toWrite = line.replace("{} ".format(lineSplit[0]), "<{}>\n<{}>".format(ul, li))
-    toWrite = toWrite[:-1] +("</{}>\n".format(li))
-    first = 1
-    fw.write(toWrite)
-    if first and next(fr).startswith(lineSplit[0]):
-        toWrite = line.replace("{} ".format(lineSplit[0]), "<{}>".format(li))
-        toWrite = toWrite[:-1] +("</{}>\n".format(li))
-        fw.write(toWrite)
-    elif first and not next(line).startswith(lineSplit[0]):
-        fw.write('lastone')
-*/
-"""
