@@ -46,9 +46,9 @@ if __name__ == "__main__":
     def md5Markdown(line):
         rep = []
         for j in range(len(line)):
-            if line[j] == '[' and line[j + 1] == '[':
+            if not j == len(line) - 1 and line[j] == '[' and line[j + 1] == '[':
                 rep.append(j)
-            elif line[j] == "]" and line[j + 1] == ']':
+            elif not j == len(line) - 1 and line[j] == "]" and line[j + 1] == ']':
                 rep.append(j)
         if rep:
             sliceObj = slice(rep[0], rep[1] + 2)
@@ -63,9 +63,9 @@ if __name__ == "__main__":
         rep = []
         s = ''
         for j in range(len(line)):
-            if line[j] == '(' and line[j + 1] == '(':
+            if not j == len(line) - 1 and line[j] == '(' and line[j + 1] == '(':
                 rep.append(j)
-            elif line[j] == ")" and line[j + 1] == ')':
+            elif not j == len(line) - 1 and line[j] == ")" and line[j + 1] == ')':
                 rep.append(j)
         if rep:
             sliceObj = slice(rep[0], rep[1] + 2)
