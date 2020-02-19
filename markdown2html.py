@@ -6,6 +6,7 @@ if __name__ == "__main__":
     import sys
     from os import path
     import re
+    import hashlib
 
     markD = {"#": "h1", "##": "h2", "###": "h3", "####": "h4", "#####": "h5", "######": "h6", "-": "ul", "*": "ol"}
 
@@ -42,6 +43,41 @@ if __name__ == "__main__":
                     flag = 0
         return line
 
+    def md5Markdown(line):
+        rep = []
+        for j in range(len(line)):
+            if line[j] == '[' and line[j + 1] == '[':
+                rep.append(j)
+            elif line[j] == "]" and line[j + 1] == ']':
+                rep.append(j)
+        if rep:
+            sliceObj = slice(rep[0], rep[1] + 2)
+        
+        toRep = line[sliceObj]
+        md = hashlib.md5(toRep.encode('utf-8')).hexdigest()
+        line = line.replace(toRep, md)
+        return line
+
+    def caseMarkdown(line):
+        rep = []
+        s = ''
+        for j in range(len(line)):
+            if line[j] == '(' and line[j + 1] == '(':
+                rep.append(j)
+            elif line[j] == ")" and line[j + 1] == ')':
+                rep.append(j)
+        if rep:
+            sliceObj = slice(rep[0], rep[1] + 2)
+        toRep = line[sliceObj]
+        s = toRep
+        for char in toRep:
+            if char == 'c':
+                toRep = toRep.replace('c', '')
+            elif char == 'C':
+                toRep = toRep.replace('C', '')
+        line = line.replace(s, toRep[2:-2])
+        return line 
+
     with open(sys.argv[1], mode='r') as fr, open(sys.argv[2], mode='w+') as fw:
         first = 0
         f = 0
@@ -52,6 +88,11 @@ if __name__ == "__main__":
                 line = inlineMarkdown(line, "**")
             if "__" in line:
                 line = inlineMarkdown(line, "__")
+            if "[[" in line and "]]" in line:
+                line = md5Markdown(line)
+            if "((" in line and "))" in line:
+                line = caseMarkdown(line) 
+                     
             # split by spaces
             lineSplit = line.split(' ')
             if lineSplit[0] in markD:
