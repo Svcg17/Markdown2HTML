@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 """
-    Parsing paragraph syntax
+    Parsing bold syntax
 """
 if __name__ == "__main__":
     import sys
     from os import path
+    import re
 
     markD = {"#": "h1", "##": "h2", "###": "h3", "####": "h4", "#####": "h5", "######": "h6", "-": "ul", "*": "ol"}
 
@@ -16,19 +17,47 @@ if __name__ == "__main__":
         sys.stderr.write("Missing " + sys.argv[1] + '\n')
         exit(1)
 
+    def handleHeadings(pattern):
+        tag = markD[lineSplit[0]]
+        toWrite = line.replace("{} ".format(lineSplit[0]), "<{}>".format(tag))
+        toWrite = toWrite[:-1] + ("</{}>\n".format(tag))
+        fw.write(toWrite)
+
+    def inlineMarkdown(line, pattern):
+        flag = 0
+        while pattern in line:
+            if not flag:
+                if pattern == "**":
+                    line = line.replace(pattern, "<b>", 1)
+                    flag = 1
+                else:
+                    line = line.replace(pattern, "<em>", 1)
+                    flag = 1
+            else:
+                if pattern == "**":
+                    line = line.replace(pattern, "</b>", 1)
+                    flag = 0
+                else: 
+                    line = line.replace(pattern, "</em>", 1)
+                    flag = 0
+        return line
+
     with open(sys.argv[1], mode='r') as fr, open(sys.argv[2], mode='w+') as fw:
         first = 0
         f = 0
         read = fr.readlines()
         for i, line in enumerate(read):
+            # For inline markdown
+            if "**" in line:
+                line = inlineMarkdown(line, "**")
+            if "__" in line:
+                line = inlineMarkdown(line, "__")
+            # split by spaces
             lineSplit = line.split(' ')
             if lineSplit[0] in markD:
                 # Headings
                 if lineSplit[0].startswith('#'):
-                    tag = markD[lineSplit[0]]
-                    toWrite = line.replace("{} ".format(lineSplit[0]), "<{}>".format(tag))
-                    toWrite = toWrite[:-1] + ("</{}>\n".format(tag))
-                    fw.write(toWrite)
+                    handleHeadings(lineSplit[0])
                 # Lists
                 elif lineSplit[0].startswith("-") or lineSplit[0].startswith("*"):
                     tag = markD[lineSplit[0]]
