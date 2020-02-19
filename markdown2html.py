@@ -45,38 +45,42 @@ if __name__ == "__main__":
 
     def md5Markdown(line):
         rep = []
-        for j in range(len(line)):
-            if not j == len(line) - 1 and line[j] == '[' and line[j + 1] == '[':
-                rep.append(j)
-            elif not j == len(line) - 1 and line[j] == "]" and line[j + 1] == ']':
-                rep.append(j)
-        if rep:
-            sliceObj = slice(rep[0], rep[1] + 2)
-        
-        toRep = line[sliceObj]
-        line = line.replace(toRep, toRep.lower())
-        md = hashlib.md5(line.encode('utf-8')).hexdigest()
-        line = line.replace(toRep.lower(), md)
+        while "[[" in line and "]]" in line:
+            rep = []
+            for j in range(len(line)):
+                if not j == len(line) - 1 and line[j] == '[' and line[j + 1] == '[':
+                    rep.append(j)
+                elif not j == len(line) - 1 and line[j] == "]" and line[j + 1] == ']':
+                    rep.append(j)
+            if rep:
+                sliceObj = slice(rep[0], rep[1] + 2)
+            
+            toRep = line[sliceObj]
+            line = line.replace(toRep, toRep.lower())
+            md = hashlib.md5(line.encode('utf-8')).hexdigest()
+            line = line.replace(toRep.lower(), md)
         return line
 
     def caseMarkdown(line):
         rep = []
         s = ''
-        for j in range(len(line)):
-            if not j == len(line) - 1 and line[j] == '(' and line[j + 1] == '(':
-                rep.append(j)
-            elif not j == len(line) - 1 and line[j] == ")" and line[j + 1] == ')':
-                rep.append(j)
-        if rep:
-            sliceObj = slice(rep[0], rep[1] + 2)
-        toRep = line[sliceObj]
-        s = toRep
-        for char in toRep:
-            if char == 'c':
-                toRep = toRep.replace('c', '')
-            elif char == 'C':
-                toRep = toRep.replace('C', '')
-        line = line.replace(s, toRep[2:-2])
+        while '((' in line:
+            rep = []
+            for j in range(len(line)):
+                if not j == len(line) - 1 and line[j] == '(' and line[j + 1] == '(':
+                    rep.append(j)
+                elif not j == len(line) - 1 and line[j] == ")" and line[j + 1] == ')':
+                    rep.append(j)
+            if rep:
+                sliceObj = slice(rep[0], rep[1] + 2)
+            toRep = line[sliceObj]
+            s = toRep
+            for char in toRep:
+                if char == 'c':
+                    toRep = toRep.replace('c', '')
+                elif char == 'C':
+                    toRep = toRep.replace('C', '')
+            line = line.replace(s, toRep[2:-2])
         return line 
 
     with open(sys.argv[1], mode='r') as fr, open(sys.argv[2], mode='w+') as fw:
