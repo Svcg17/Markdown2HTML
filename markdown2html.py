@@ -56,9 +56,9 @@ if __name__ == "__main__":
                 sliceObj = slice(rep[0], rep[1] + 2)
             
             toRep = line[sliceObj]
-            line = line.replace(toRep, toRep.lower())
-            md = hashlib.md5(line.encode('utf-8')).hexdigest()
-            line = line.replace(toRep.lower(), md)
+            toHash = toRep[2:-2]
+            md = hashlib.md5(toHash.encode()).hexdigest()
+            line = line.replace(toRep, md)
         return line
 
     def caseMarkdown(line):
