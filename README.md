@@ -3,7 +3,9 @@ Turn Markdown files to HTML syntax just for fun!
 
 ## Usage
 `./markdown2html.py readme.md readme.html`
-![example](https://imgur.com/yPZHOyn)
+<p align="center">
+<img src="https://i.imgur.com/ZminzQO.jpg" width="600px" >
+</p>
 
 ## Features 
 | MD syntax | HTML syntax/tags    | Description               |
